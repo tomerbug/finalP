@@ -41,18 +41,18 @@ def login():
 @app.route('/register',methods =['POST','GET'])
 def reg_page():
     return render_template("register.html")
-
+#get user/id
 @app.route('/user/<int:x>',methods = ['GET'])
 def checkUser(x):
     par=""
     conn,cursor =SQL_connect.Dbinit()
-    cursor = SQL_connect.getIdUser(x,cursor)
+    cursor = SQL_connect.get_user_id(x,cursor)
     for row in cursor:
         z= str(row)
         par= z + par
-    SQL_connect.close_sql(conn,cursor)
+    SQL_connect.close_sql(conn)
     return  par
-
+#get
 @app.route('/Get',methods = ['GET'])
 def getUser():
     conn,crusor= SQL_connect.Dbinit()
@@ -63,15 +63,39 @@ def getUser():
         par = z + par
     SQL_connect.close_sql(conn)
     return par
-
-@app.route('/Post/',methods = ['POST'])
+#post
+@app.route('/login',methods = ['POST'])
 def post_new():
     conn, crusor = SQL_connect.Dbinit()
     password = request.form['password']
-    full_name = request.form['name']
+    full_name = request.form['username']
     ID_FORM = request.form['ID']
     s = SQL_connect.post_user(crusor,full_name,password,ID_FORM)
 
     SQL_connect.close_sql(conn)
-    return s
+    return 'OK'
+
+# @app.route('/delete/<int:x>',methods = ['DELETE'])
+@app.route('/delete', methods = ['GET','DELETE'])
+# def delete_user(x):
+def delete_user():
+     conn, cursor = SQL_connect.Dbinit()
+     par = ""
+     cursor = SQL_connect.delete_user(x, cursor)
+     for row in crusor:
+         z = str(row)
+         par = z + par
+     SQL_connect.close_sql(conn)
+     return par
+
+@app.route('/put/<int x>/<str name>', methods = ['PUT'])
+def put_user(x,name):
+     conn, cursor = SQL_connect.Dbinit()
+     par = ""
+     cursor = SQL_connect.put_user(x, cursor,name)
+     for row in crusor:
+         z = str(row)
+         par = z + par
+     SQL_connect.close_sql(conn)
+     return par
 app.run()
