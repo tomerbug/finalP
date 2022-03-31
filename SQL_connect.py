@@ -27,13 +27,44 @@ def post_user(crusor,full_name,password,ID_FORM): #post user
     return crusor
 #deletes user
 def delete_user(x, cursor):
-    crusor.execute(f"DELETE FROM users WHERE id_Al = {x}")
-    return crusor
+    cursor.execute(f"DELETE FROM users WHERE id_Al = {x}")
+    return cursor
 #????????
-def put_user(x, cursor,name):
-    crusor.execute(f"INSERT INTO users (full_name) values {name} where id_Al = {x}")
+def put_user(cursor,name):
+    crusor.execute(f"INSERT INTO users (full_name) values {name}")
     return crusor
 
+def get_flights(cursor):
+    cursor.execute(f"SELECT * FROM flights ")
+    return cursor
+
+def get_f_id(cursor,x):
+    cursor.execute(f"SELECT * FROM flights where flight_id = {x}")
+    return cursor
+
+def post_flights(crusor, time, seats, origin_country,dest_country):
+    crusor.execute("INSERT INTO Flights(timestamp,remaining_seats,origin_country_id,dest_country_id) VALUES (?, ?, ?, ?)", (time, seats, origin_country,dest_country))
+    return crusor
+
+def delete_flight(cursor, x):
+    cursor.execute(f"delete FROM Flights WHERE flight_id = {x}")
+    return cursor
+
+def get_tickets(cursor):
+    cursor.execute(f"SELECT * FROM Tickets ")
+    return cursor
+
+def get_tickets_id(cursor,x):
+    cursor.execute(f"SELECT * FROM flights where ticket_id = {x}")
+    return cursor
+
+def post_post_tickets_sql(cursor,userID,flightID):
+    crusor.execute("INSERT INTO Tickets(user_id,flight_id) VALUES (?, ?)", (userID,flightID))
+    return crusor
+
+def delete_ticket(cursor, x):
+    cursor.execute(f"DELETE FROM Tickets WHERE ticket_id = {x}")
+    return cursor
 def close_sql(conn):
     conn.commit()
     conn.close()
