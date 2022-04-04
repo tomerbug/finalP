@@ -3,21 +3,13 @@ from flask import  Flask
 from flask import flash,render_template,request,redirect,url_for
 import json
 import  sqlite3
-
+import logging
 app = Flask(__name__)
 app.secret_key ="__privatekey__"
 #Home PAGE
 @app.route('/',methods =['POST','GET'])
 def home_page():
     return render_template("Home.html")
-#consider as register for now
-#def login():
-#    password = request.form['password']
-#    full_name = request.form['name']
-#    ID_FORM = request.form['ID']
-#  #  register_user_to_db(username, password,ID_FORM)
-#    creat = SQL_connect.create_user(full_name,password,ID_FORM)
-#    conn.commit()
 
 @app.route('/register',methods =['POST','GET'])
 def reg_page():
@@ -176,7 +168,7 @@ def get_t_id(x):
 def form_ticket():
     return render_template('tickets.html')
 # post ticket
-@app.route('/ticket/post', methods = ['POST'])#לא בדקתי עדיין
+@app.route('/ticket/post', methods = ['POST'])
 def post_t():
     conn, cursor = SQL_connect.Dbinit()
     par = ""
@@ -200,6 +192,7 @@ def ticket_delete_f(x):
 @app.route("/manu", methods=['GET'])
 def manu():
     return render_template('manu.html')
+#login the client
 @app.route("/login", methods=['GET'])
 def login():
         username = request.args['username']
@@ -214,7 +207,7 @@ def login():
                 return render_template('/manu.html')
             else:
                 return "info was incorrect"
-
+#register the client
 @app.route("/register/post", methods=['POST'])
 def register():
     full_name = request.form['username']
@@ -230,6 +223,7 @@ def register():
         SQL_connect.close_sql(conn)
         flash("user created")
         return render_template("Home.html")
+#buy ticket for client
 @app.route("/form/buyT", methods=['GET'])
 def form_buy_t():
     return render_template('/buyTic.html')
@@ -242,7 +236,29 @@ def buy_t():
     SQL_connect.close_sql(conn)
     flash("user got a ticket ")
     return render_template('/manu.html')
+@app.route("/form/deleteT", methods=['GET'])
+def form_delete_t():
+    return render_template('/deleteT.html')
+@app.route('/deleteTic/',methods=['GET'])
+def ticket_delete_from_client():
+    TICKET_ID = request.args['TICKET ID']
+    return ticket_delete_f(TICKET_ID)
+#get the clients tickets
+@app.route("/form/post_user_page", methods=['GET'])
+def form_delete_tic():
+    return render_template('/POST_USER_CLIENT.html')
 
+@app.route("/post_user_page", methods=['GET'])
+def get_ticket_from_client():
+    conn, cursor = SQL_connect.Dbinit()
+    user_id = request.args['user id']
+    par = " "
+    cursor.execute(f"SELECT * FROM Tickets where user_id = {user_id}")
+    for row in cursor:
+        z = str(row)
+        par = z + par
+    SQL_connect.close_sql(conn)
+    return par
 
 
 
